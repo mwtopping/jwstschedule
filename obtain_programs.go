@@ -3,11 +3,10 @@ package main
 import (
 	"fmt"
 	"io"
+	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
-	//	"net/http"
-	"os"
-	"regexp"
 )
 
 type ProgramInfo struct {
@@ -75,7 +74,6 @@ func parse_exptime(s string) (float32, float32) {
 		return float32(priT), float32(0.0)
 	} else { // both prime and parallel time
 		//for pure parallel, primetime should still be listed as zero
-
 		priT, err := strconv.ParseFloat(s[:split_index], 32)
 		if err != nil {
 			priT = 0.0
@@ -168,19 +166,19 @@ func parse_table_row(htmlRow string) []string {
 	return entries
 }
 
-func get_accepted_ids() []ProgramInfo {
+func get_accepted_ids(url string) []ProgramInfo {
 	//PARSE_URL := "https://www.stsci.edu/jwst/science-execution/approved-programs/general-observers/cycle-1-go"
 
-	response, err := os.Open("./programs.txt")
-	//response, err := http.Get(PARSE_URL)
+	//response, err := os.Open("./programs.txt")
+	response, err := http.Get(url)
 	if err != nil {
 		fmt.Println("Error Receiving HTML")
 		return []ProgramInfo{}
 	}
-	//defer response.Body.Close()
-	defer response.Close()
-	//body, err := io.ReadAll(response.Body)
-	body, err := io.ReadAll(response)
+	defer response.Body.Close()
+	//defer response.Close()
+	body, err := io.ReadAll(response.Body)
+	//body, err := io.ReadAll(response)
 
 	var all_programs []ProgramInfo
 

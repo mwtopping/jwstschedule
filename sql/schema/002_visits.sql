@@ -1,0 +1,13 @@
+CREATE TABLE visits (
+	id INTEGER PRIMARY KEY,
+	created_at INTEGER NOT NULL,
+	updated_at INTEGER NOT NULL,
+	program_ID INTEGER NOT NULL,
+	observation INTEGER NOT NULL,
+	visit INTEGER NOT NULL,
+	Status TEXT NOT NULL,
+	Target TEXT NOT NULL,   
+	Configuration TEXT NOT NULL,
+	StartTime INTEGER NOT NULL,
+	EndTime INTEGER NOT NULL
+);
