@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<visitStatusReport observatory="JWST" id="1914">
+    <title>Visit Information</title>
+    <reportTime>Tue Aug 26 14:07:23 EDT 2025</reportTime>
+    <visit observation="2" visit="2">
+        <status>Executed</status>
+        <target>AURORA_GOODSN_inputcat_v11</target>
+        <configuration>NIRSpec MultiObject Spectroscopy</configuration>
+        <hours>4.09</hours>
+        <startTime>Dec 20, 2023 14:43:38</startTime>
+        <endTime>Dec 20, 2023 18:38:18</endTime>
+    </visit>
+    <visit observation="2" visit="1">
+        <status>Executed</status>
+        <target>AURORA_GOODSN_inputcat_v11</target>
+        <configuration>NIRSpec MultiObject Spectroscopy</configuration>
+        <hours>27.41</hours>
+        <startTime>Dec 21, 2023 12:49:03</startTime>
+        <endTime>Dec 22, 2023 13:31:18</endTime>
+    </visit>
+    <visit observation="1" visit="2">
+        <status>Executed</status>
+        <target>AURORA_COSMOS_inputcat_final</target>
+        <configuration>NIRSpec MultiObject Spectroscopy</configuration>
+        <hours>3.89</hours>
+        <startTime>Dec 25, 2023 12:27:26</startTime>
+        <endTime>Dec 25, 2023 16:06:05</endTime>
+    </visit>
+    <visit observation="1" visit="1">
+        <status>Executed</status>
+        <target>AURORA_COSMOS_inputcat_final</target>
+        <configuration>NIRSpec MultiObject Spectroscopy</configuration>
+        <hours>27.20</hours>
+        <startTime>Jan 2, 2024 15:33:36</startTime>
+        <endTime>Jan 3, 2024 15:21:19</endTime>
+    </visit>
+</visitStatusReport>%
+michael@Michaels-Mac-mini jwstscheduler % go run .
+# jwstscheduler
+./main.go:7:2: "os" imported and not used
+michael@Michaels-Mac-mini jwstscheduler % go run .
+Hello
+Parsing  https://www.stsci.edu/jwst-program-info/visits/?program=1914&download=&pi=1&referrer=https://www.stsci.edu
+<?xml version='1.0' encoding='UTF-8'?>
+<visitStatusReport observatory="JWST" id="1914">
+    <title>Visit Information</title>
+    <reportTime>Tue Aug 26 14:09:34 EDT 2025</reportTime>
+    <visit observation="2" visit="2">
+        <status>Executed</status>
+        <target>AURORA_GOODSN_inputcat_v11</target>
+        <configuration>NIRSpec MultiObject Spectroscopy</configuration>
+        <hours>4.09</hours>
+        <startTime>Dec 20, 2023 14:43:38</startTime>
+        <endTime>Dec 20, 2023 18:38:18</endTime>
+    </visit>
+    <visit observation="2" visit="1">
+        <status>Executed</status>
+        <target>AURORA_GOODSN_inputcat_v11</target>
+        <configuration>NIRSpec MultiObject Spectroscopy</configuration>
+        <hours>27.41</hours>
+        <startTime>Dec 21, 2023 12:49:03</startTime>
+        <endTime>Dec 22, 2023 13:31:18</endTime>
+    </visit>
+    <visit observation="1" visit="2">
+        <status>Executed</status>
+        <target>AURORA_COSMOS_inputcat_final</target>
+        <configuration>NIRSpec MultiObject Spectroscopy</configuration>
+        <hours>3.89</hours>
+        <startTime>Dec 25, 2023 12:27:26</startTime>
+        <endTime>Dec 25, 2023 16:06:05</endTime>
+    </visit>
+    <visit observation="1" visit="1">
+        <status>Executed</status>
+        <target>AURORA_COSMOS_inputcat_final</target>
+        <configuration>NIRSpec MultiObject Spectroscopy</configuration>
+        <hours>27.20</hours>
+        <startTime>Jan 2, 2024 15:33:36</startTime>
+        <endTime>Jan 3, 2024 15:21:19</endTime>
+    </visit>
+</visitStatusReport>
