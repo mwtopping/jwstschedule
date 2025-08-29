@@ -33,13 +33,37 @@ func main() {
 
 	cfg := apiConfig{}
 
-	os.Remove("./jwst.db")
-
-	db, err := sql.Open("sqlite", "./jwst.db")
+	err := cfg.ResetDatabase("./jwst.db")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	defer cfg.db.Close()
+
+	//err := cfg.LoadDatabase("./jwst.db")
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//defer cfg.db.Close()
+
+	program_IDs, err := cfg.dbQueries.GetProgramIDs(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal("Error getting IDS")
+	}
+
+	for _, p := range program_IDs {
+		fmt.Println(p)
+	}
+
+}
+
+func (cfg *apiConfig) ResetDatabase(s string) error {
+	os.Remove(s)
+	db, err := sql.Open("sqlite", s)
+	cfg.db = db
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// create tables here
 	if _, err := db.ExecContext(context.Background(), program_info_schema); err != nil {
@@ -55,21 +79,36 @@ func main() {
 	err = cfg.create_program_database()
 	if err != nil {
 		log.Fatal("Error creating program database", err)
-		return
+		return err
 	}
 
 	program_IDs, err := cfg.dbQueries.GetProgramIDs(context.Background())
 	if err != nil {
 		log.Fatal("Error getting IDS")
-		return
+		return err
 	}
 
-	//cfg.get_program_info(int(8582))
-	//fmt.Scanln()
+	interval := time.Duration(10) * time.Second
+	ticker := time.NewTicker(interval)
 
 	for _, ID := range program_IDs {
+		fmt.Println(ID)
+		<-ticker.C
 		cfg.get_program_info(int(ID))
-		fmt.Scanln()
+		//fmt.Scanln()
+	}
+	return nil
+}
+
+func (cfg *apiConfig) LoadDatabase(s string) error {
+	db, err := sql.Open("sqlite", s)
+	cfg.db = db
+	if err != nil {
+		log.Fatal(err)
 	}
 
+	queries := database.New(db)
+	cfg.dbQueries = queries
+
+	return nil
 }

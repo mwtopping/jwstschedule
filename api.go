@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"jwstscheduler/internal/database"
 	"strings"
@@ -10,6 +11,7 @@ import (
 
 type apiConfig struct {
 	dbQueries *database.Queries
+	db        *sql.DB
 }
 
 func (cfg *apiConfig) create_program_database() error {
