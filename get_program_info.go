@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"jwstscheduler/internal/database"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -79,16 +80,18 @@ func (cfg *apiConfig) add_visit(programID int, visit SingleVisit) error {
 			sTime = 0
 			eTime = 0
 		} else {
-			sTimeYears, err := strconv.ParseFloat(strings.TrimSpace(endPoints[0]), 64)
-			if err != nil {
-				fmt.Println(err)
-				return err
-			}
-			eTimeYears, err := strconv.ParseFloat(strings.TrimSpace(endPoints[1]), 64)
-			if err != nil {
-				fmt.Println(err)
-				return err
-			}
+			sTimeYears := strings.TrimSpace(endPoints[0])
+			//			sTimeYears, err := strconv.ParseFloat(strings.TrimSpace(endPoints[0]), 64)
+			//			if err != nil {
+			//				fmt.Println(err)
+			//				return err
+			//			}
+			eTimeYears := strings.TrimSpace(endPoints[1])
+			//			eTimeYears, err := strconv.ParseFloat(strings.TrimSpace(endPoints[1]), 64)
+			//			if err != nil {
+			//				fmt.Println(err)
+			//				return err
+			//			}
 
 			sTime = fractionalYearToUnix(sTimeYears)
 			eTime = fractionalYearToUnix(eTimeYears)
@@ -127,25 +130,30 @@ func get_program_url(ID int) string {
 	return url
 }
 
-func fractionalYearToUnix(fractionalYear float64) int64 {
-	year := int(fractionalYear)
-	fraction := fractionalYear - float64(year)
+func fractionalYearToUnix(fractionalYear string) int64 {
+
+	date_parts := strings.Split(fractionalYear, ".")
+
+	if len(date_parts) != 2 {
+		log.Println("Not enough parts of the date")
+		return 0
+	}
+
+	year, err := strconv.Atoi(date_parts[0])
+	if err != nil {
+		log.Println("Error converting year to int", err)
+		return 0
+	}
+
+	day, err := strconv.Atoi(date_parts[1])
+	if err != nil {
+		log.Println("Error converting year to int", err)
+		return 0
+	}
 
 	startOfYear := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
 
-	isLeapYear := year%4 == 0 && (year%100 != 0 || year%400 == 0)
-
-	var daysInYear int
-	if isLeapYear {
-		daysInYear = 366
-	} else {
-		daysInYear = 365
-	}
-
-	totalNanoseconds := fraction * float64(daysInYear) * 24 * 60 * 60 * 1e9
-	duration := time.Duration(totalNanoseconds)
-
-	resultTime := startOfYear.Add(duration)
+	resultTime := startOfYear.AddDate(0, 0, day)
 
 	return resultTime.Unix()
 }

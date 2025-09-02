@@ -14,3 +14,15 @@ VALUES (
 	?
 )
 RETURNING *;
+
+-- name: GetAllVisits :many
+SELECT 
+	program_info.id, visits.observation, visits.visit, visits.StartTime, visits.EndTime
+FROM
+	visits
+	JOIN
+		program_info
+	ON visits.program_ID = program_info.id
+WHERE
+	visits.StartTime > 0
+ORDER BY visits.StartTime;

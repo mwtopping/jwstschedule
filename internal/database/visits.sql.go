@@ -71,3 +71,53 @@ func (q *Queries) CreateVisit(ctx context.Context, arg CreateVisitParams) (Visit
 	)
 	return i, err
 }
+
+const getAllVisits = `-- name: GetAllVisits :many
+SELECT 
+	program_info.id, visits.observation, visits.visit, visits.StartTime, visits.EndTime
+FROM
+	visits
+	JOIN
+		program_info
+	ON visits.program_ID = program_info.id
+WHERE
+	visits.StartTime > 0
+ORDER BY visits.StartTime
+`
+
+type GetAllVisitsRow struct {
+	ID          int64
+	Observation int64
+	Visit       int64
+	Starttime   int64
+	Endtime     int64
+}
+
+func (q *Queries) GetAllVisits(ctx context.Context) ([]GetAllVisitsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllVisits)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetAllVisitsRow
+	for rows.Next() {
+		var i GetAllVisitsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Observation,
+			&i.Visit,
+			&i.Starttime,
+			&i.Endtime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

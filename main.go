@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	_ "embed"
 	"fmt"
+	"html/template"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -31,6 +33,8 @@ var visits_schema string
 
 func main() {
 
+	const port = ":8080"
+
 	cfg := apiConfig{}
 
 	err := cfg.ResetDatabase("./jwst.db")
@@ -39,21 +43,70 @@ func main() {
 	}
 	defer cfg.db.Close()
 
-	//err := cfg.LoadDatabase("./jwst.db")
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//defer cfg.db.Close()
-
-	program_IDs, err := cfg.dbQueries.GetProgramIDs(context.Background())
+	err = cfg.LoadDatabase("./jwst.db")
 	if err != nil {
-		fmt.Println(err)
-		log.Fatal("Error getting IDS")
+		log.Fatal(err)
+	}
+	defer cfg.db.Close()
+
+	mux := http.NewServeMux()
+
+	fs := http.FileServer(http.Dir("static"))
+	mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
+
+	mux.HandleFunc("GET /", cfg.handlerDisplay)
+
+	server := &http.Server{Handler: mux, Addr: port}
+	log.Printf("Server listening on port%v\n", port)
+	log.Fatal(server.ListenAndServe())
+
+}
+
+func (cfg *apiConfig) handlerDisplay(w http.ResponseWriter, r *http.Request) {
+
+	//load html template
+	tmpl, err := template.ParseFiles("./templates/mytemplate.html")
+	if err != nil {
+		log.Println("Error reading template")
+		log.Println(err)
+		return
 	}
 
-	for _, p := range program_IDs {
-		fmt.Println(p)
+	type Visit struct {
+		ProgID    int
+		ObsNum    int
+		VisNum    int
+		Starttime string
+		Endtime   string
 	}
+
+	DisplayVisits := make([]Visit, 0, 0)
+
+	vs, err := cfg.dbQueries.GetAllVisits(context.Background())
+
+	for _, v := range vs {
+		startTime := time.Unix(v.Starttime, 0)
+		endTime := time.Unix(v.Endtime, 0)
+
+		DisplayVisit := Visit{
+			ProgID:    int(v.ID),
+			ObsNum:    int(v.Observation),
+			VisNum:    int(v.Visit),
+			Starttime: startTime.Format("2006-01-02T15:04:05"),
+			Endtime:   endTime.Format("2006-01-02T15:04:05"),
+		}
+
+		DisplayVisits = append(DisplayVisits, DisplayVisit)
+
+	}
+
+	type PageData struct {
+		DisplayVisits []Visit
+	}
+
+	data := PageData{DisplayVisits: DisplayVisits}
+
+	tmpl.Execute(w, data)
 
 }
 
@@ -88,7 +141,7 @@ func (cfg *apiConfig) ResetDatabase(s string) error {
 		return err
 	}
 
-	interval := time.Duration(10) * time.Second
+	interval := time.Duration(4) * time.Second
 	ticker := time.NewTicker(interval)
 
 	for _, ID := range program_IDs {

@@ -1,0 +1,140 @@
+table {
+    border-collapse: separate; 
+    border-spacing: 2 2 10 10; 
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding:40px;
+}
+
+
+td
+{
+    text-align: center;
+    vertical-align:middle;
+    padding-left:30px;
+    padding-right:30px;
+}
+
+.timeline-cell {
+  width: 750px;
+  height: 50px;
+  position: relative;
+    border-left: 20px solid transparent;
+}
+
+.timeline-track {
+  position: absolute;
+  top: 20px;
+  left: 0px;
+  right: 0px;
+  height: 4px;
+  background-color: #e0e0e0;
+  border-radius: 2px;
+}
+
+.timeline-segment {
+  position: absolute;
+  height: 12px;
+  /*background: linear-gradient(90deg, #FF6B6B, #4ECDC4);*/
+  background: #777777;
+  border-radius: 6px;
+  top: 15px;
+}
+
+.timeline-label {
+  position: absolute;
+  font-size: 9px;
+  color: #555;
+  white-space: nowrap;
+}
+
+
+.hash-mark {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+}
+
+.hash-line {
+    width: 1px;
+    height: 30px;
+    background-color: #999;
+    margin: 0 auto;
+}
+
+.hash-label {
+    position: absolute;
+    font-size: 8px;
+    color: #666;
+    white-space: nowrap;
+    top: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255,255,255,0.9);
+    padding: 1px 2px;
+    border-radius: 2px;
+}
+
+
+
+
+
+
+.controls {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.date-controls {
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.date-controls label {
+    font-weight: bold;
+    color: #333;
+}
+
+.date-controls input[type="date"] {
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.date-controls input[type="date"]:focus {
+    outline: none;
+    border-color: #4ECDC4;
+}
+
+.date-controls button {
+    padding: 8px 16px;
+    background-color: #4ECDC4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.date-controls button:hover {
+    background-color: #45B7B8;
+}
+
+.date-controls button:active {
+    transform: translateY(1px);
+}
+
+#auto-fit {
+    background-color: #FF6B6B;
+}
+
+#auto-fit:hover {
+    background-color: #FF5252;
+}

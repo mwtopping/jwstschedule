@@ -1,0 +1,49 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Table</title>
+    <link rel="stylesheet" href="/static/styles.css">
+
+</head>
+<body>
+
+        <center>
+
+    <h1> Project Timeline</h1>
+    <div class="controls">
+        <div class="date-controls">
+            <label for="min-datetime">Timeline Start:</label>
+            <input type="datetime-local" id="min-datetime" value="2025-01-01">
+
+            <label for="max-datetime">Timeline End:</label>
+            <input type="datetime-local" id="max-datetime" value="2025-05-01">
+
+            <button id="auto-fit">Auto Fit to Data</button>
+        </div>
+
+    </div>
+
+<table id="timeline-table">
+<thead>
+<tr>
+<th> Program ID </th>
+<th> Observation </th>
+<th> Visit </th>
+<th> Timeline </th>
+</tr>
+</thead>
+<tbody>
+{{range .DisplayVisits}}
+    <tr data-start="{{.Starttime}}" data-end="{{.Endtime}}">
+    <td>{{.ProgID}}</td>
+    <td>{{.ObsNum}}</td>
+    <td>{{.VisNum}}</td>
+    <td class="timeline-cell"></td>
+</tr>
+{{end}}
+</tbody>
+        </center>
+        <script src="/static/script.js"></script>
+</body>
+</html>
