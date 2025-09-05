@@ -4,22 +4,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timeline Table</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
 
 </head>
 <body>
 
         <center>
 
-    <h1> Project Timeline</h1>
+    <h1> JWST Program Schedule</h1>
     <div class="controls">
         <div class="date-controls">
-            <label for="min-datetime">Timeline Start:</label>
+            <label for="min-datetime">Schedule Start:</label>
             <input type="datetime-local" id="min-datetime" value="2025-01-01">
 
-            <label for="max-datetime">Timeline End:</label>
+            <label for="max-datetime">Schedule End:</label>
             <input type="datetime-local" id="max-datetime" value="2025-05-01">
 
-            <button id="auto-fit">Auto Fit to Data</button>
+            <button id="auto-fit">Auto Fit</button>
         </div>
 
     </div>
@@ -28,17 +34,16 @@
 <thead>
 <tr>
 <th> Program ID </th>
-<th> Observation </th>
-<th> Visit </th>
-<th> Timeline </th>
+<th> Title </th>
+<th> Schedule </th>
 </tr>
 </thead>
 <tbody>
 {{range .DisplayVisits}}
     <tr data-start="{{.Starttime}}" data-end="{{.Endtime}}">
-    <td>{{.ProgID}}</td>
-    <td>{{.ObsNum}}</td>
-    <td>{{.VisNum}}</td>
+                        <td title="Obs:{{.ObsNum}} Visit:{{.VisNum}}">{{.ProgID}}</td>
+    <td style="text-align:start;">{{.ProgName}}</td>
+
     <td class="timeline-cell"></td>
 </tr>
 {{end}}

@@ -74,7 +74,7 @@ func (q *Queries) CreateVisit(ctx context.Context, arg CreateVisitParams) (Visit
 
 const getAllVisits = `-- name: GetAllVisits :many
 SELECT 
-	program_info.id, visits.observation, visits.visit, visits.StartTime, visits.EndTime
+	program_info.id, visits.observation, visits.visit, program_info.title, visits.StartTime, visits.EndTime
 FROM
 	visits
 	JOIN
@@ -89,6 +89,7 @@ type GetAllVisitsRow struct {
 	ID          int64
 	Observation int64
 	Visit       int64
+	Title       string
 	Starttime   int64
 	Endtime     int64
 }
@@ -106,6 +107,7 @@ func (q *Queries) GetAllVisits(ctx context.Context) ([]GetAllVisitsRow, error) {
 			&i.ID,
 			&i.Observation,
 			&i.Visit,
+			&i.Title,
 			&i.Starttime,
 			&i.Endtime,
 		); err != nil {

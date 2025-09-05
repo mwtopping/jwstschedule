@@ -17,7 +17,7 @@ RETURNING *;
 
 -- name: GetAllVisits :many
 SELECT 
-	program_info.id, visits.observation, visits.visit, visits.StartTime, visits.EndTime
+	program_info.id, visits.observation, visits.visit, program_info.title, visits.StartTime, visits.EndTime
 FROM
 	visits
 	JOIN

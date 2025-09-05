@@ -1,5 +1,16 @@
+body {
+  background-color: #eee;
+}
+
+h1, th {
+  font-family: "Source Serif 4", serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+}
+
 table {
-    border-collapse: separate; 
+    border-collapse: collapse;
     border-spacing: 2 2 10 10; 
     background-color: white;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -7,6 +18,9 @@ table {
     padding:40px;
 }
 
+tr {
+    border-bottom: 1px solid #ddd;
+}
 
 td
 {
@@ -14,18 +28,23 @@ td
     vertical-align:middle;
     padding-left:30px;
     padding-right:30px;
+    padding-top:4px;
+    padding-bottom:4px;
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
 }
 
 .timeline-cell {
   width: 750px;
-  height: 50px;
+  height: 20px;
   position: relative;
-    border-left: 20px solid transparent;
 }
 
 .timeline-track {
   position: absolute;
-  top: 20px;
+  top: 10px;
   left: 0px;
   right: 0px;
   height: 4px;
@@ -35,11 +54,12 @@ td
 
 .timeline-segment {
   position: absolute;
-  height: 12px;
+  height: 10px;
   /*background: linear-gradient(90deg, #FF6B6B, #4ECDC4);*/
   background: #777777;
   border-radius: 6px;
-  top: 15px;
+  top: 7px;
+  min-width: 1.5px;
 }
 
 .timeline-label {
@@ -52,13 +72,13 @@ td
 
 .hash-mark {
     position: absolute;
-    top: 0;
+    top: 6px;
     transform: translateX(-50%);
 }
 
 .hash-line {
     width: 1px;
-    height: 30px;
+    height: 12px;
     background-color: #999;
     margin: 0 auto;
 }
@@ -68,10 +88,10 @@ td
     font-size: 8px;
     color: #666;
     white-space: nowrap;
-    top: 32px;
+    top: 11px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(255,255,255,0.9);
+    background-color: rgba(255,255,255,0.0);
     padding: 1px 2px;
     border-radius: 2px;
 }
@@ -97,7 +117,11 @@ td
 
 .date-controls label {
     font-weight: bold;
-    color: #333;
+      font-family: "Source Serif 4", serif;
+      font-optical-sizing: auto;
+      font-style: normal;
+
+
 }
 
 .date-controls input[type="date"] {

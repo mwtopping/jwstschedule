@@ -25,7 +25,7 @@ function generateTimelines() {
 
     const totalMilliseconds = maxDate - minDate;
 
-    function generateHashMarks() {
+    function generateHashMarks(showTimes) {
         let hashMarksHTML = '';
         let numMarks = 4;
         let formatOptions = {};
@@ -36,17 +36,31 @@ function generateTimelines() {
             const markDate = new Date(minDate.getTime() + (totalMilliseconds * (i / numMarks)));
 
             const labelClass = 'hash-label';
+            if (showTimes === true) {
+             hashMarksHTML += `
+                    <div class="hash-mark" style="left: ${percentage}%;">
+                        <div class="hash-line"></div>
+                        <div class="${labelClass}">${markDate.toLocaleDateString('en-US', formatOptions)}</div>
+                    </div>
+                `;
 
-            hashMarksHTML += `
-                <div class="hash-mark" style="left: ${percentage}%;">
-                    <div class="hash-line"></div>
-                    <div class="${labelClass}">${markDate.toLocaleDateString('en-US', formatOptions)}</div>
-                </div>
-            `;
+
+
+            } else {
+                hashMarksHTML += `
+                    <div class="hash-mark" style="left: ${percentage}%;">
+                        <div class="hash-line"></div>
+                    </div>
+                `;
+
+            }
         }
 
         return hashMarksHTML;
     }
+
+    const occurance = 10;
+    ii = 0;
 
     rows.forEach(row => {
         const startDate = new Date(row.dataset.start);
@@ -57,11 +71,21 @@ function generateTimelines() {
         const endOffset = Math.min(100, ((endDate - minDate) / totalMilliseconds) * 100);
         const duration = endOffset - startOffset;
 
+        if (ii%occurance ===0) {
         timelineCell.innerHTML = `
             <div class="timeline-track"></div>
             <div class="timeline-segment" style="left: ${startOffset}%; width: ${duration}%;"></div>
-            ${generateHashMarks()}
+            ${generateHashMarks(true)}
         `;
+        } else {
+        timelineCell.innerHTML = `
+            <div class="timeline-track"></div>
+            <div class="timeline-segment" style="left: ${startOffset}%; width: ${duration}%;"></div>
+            ${generateHashMarks(false)}
+        `;
+
+        }
+        ii += 1;
 
     });
 }

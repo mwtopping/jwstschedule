@@ -37,13 +37,13 @@ func main() {
 
 	cfg := apiConfig{}
 
-	err := cfg.ResetDatabase("./jwst.db")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer cfg.db.Close()
+	//	err := cfg.ResetDatabase("./jwst.db")
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//	defer cfg.db.Close()
 
-	err = cfg.LoadDatabase("./jwst.db")
+	err := cfg.LoadDatabase("./jwst.db")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -76,6 +76,7 @@ func (cfg *apiConfig) handlerDisplay(w http.ResponseWriter, r *http.Request) {
 		ProgID    int
 		ObsNum    int
 		VisNum    int
+		ProgName  string
 		Starttime string
 		Endtime   string
 	}
@@ -92,6 +93,7 @@ func (cfg *apiConfig) handlerDisplay(w http.ResponseWriter, r *http.Request) {
 			ProgID:    int(v.ID),
 			ObsNum:    int(v.Observation),
 			VisNum:    int(v.Visit),
+			ProgName:  v.Title,
 			Starttime: startTime.Format("2006-01-02T15:04:05"),
 			Endtime:   endTime.Format("2006-01-02T15:04:05"),
 		}

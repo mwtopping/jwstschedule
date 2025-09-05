@@ -32,3 +32,4 @@ go.work.sum
 # .vscode/
 
 jwst.db
+tmp/
