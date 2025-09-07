@@ -40,7 +40,7 @@
 </thead>
 <tbody>
 {{range .DisplayVisits}}
-    <tr data-start="{{.Starttime}}" data-end="{{.Endtime}}">
+                    <tr data-start="{{.Starttime}}" data-end="{{.Endtime}}" data-status="{{.Status}}" data-eap={{.EAP}}>
                         <td title="Obs:{{.ObsNum}} Visit:{{.VisNum}}">{{.ProgID}}</td>
     <td style="text-align:start;">{{.ProgName}}</td>
 

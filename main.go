@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"jwstscheduler/internal/database"
@@ -76,14 +77,33 @@ func (cfg *apiConfig) handlerDisplay(w http.ResponseWriter, r *http.Request) {
 		ProgID    int
 		ObsNum    int
 		VisNum    int
+		EAP       int
 		ProgName  string
+		Status    string
 		Starttime string
 		Endtime   string
 	}
 
 	DisplayVisits := make([]Visit, 0, 0)
 
-	vs, err := cfg.dbQueries.GetAllVisits(context.Background())
+	var vs []database.GetAllVisitsRow
+
+	requestPath := strings.TrimPrefix(r.URL.Path, "/")
+	switch requestPath {
+	case "week":
+		weekvs, err := cfg.dbQueries.GetWeekVisits(context.Background(), time.Now().Unix())
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		for _, weekv := range weekvs {
+			vs = append(vs, database.GetAllVisitsRow(weekv))
+		}
+
+	default:
+		vs, err = cfg.dbQueries.GetAllVisits(context.Background())
+
+	}
 
 	for _, v := range vs {
 		startTime := time.Unix(v.Starttime, 0)
@@ -93,10 +113,15 @@ func (cfg *apiConfig) handlerDisplay(w http.ResponseWriter, r *http.Request) {
 			ProgID:    int(v.ID),
 			ObsNum:    int(v.Observation),
 			VisNum:    int(v.Visit),
+			EAP:       int(v.Eap),
 			ProgName:  v.Title,
-			Starttime: startTime.Format("2006-01-02T15:04:05"),
-			Endtime:   endTime.Format("2006-01-02T15:04:05"),
+			Status:    v.Status,
+			Starttime: startTime.In(time.UTC).Format("2006-01-02T15:04:05"),
+			Endtime:   endTime.In(time.UTC).Format("2006-01-02T15:04:05"),
 		}
+
+		fmt.Println(startTime, v.Starttime)
+		fmt.Println(startTime.In(time.UTC).Format("2006-01-02T15:04:05 MST"))
 
 		DisplayVisits = append(DisplayVisits, DisplayVisit)
 
