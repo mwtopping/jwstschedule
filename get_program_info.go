@@ -13,9 +13,33 @@ import (
 	"time"
 )
 
+func (cfg *apiConfig) update_program_info(ID int) {
+	url := get_program_url(ID)
+
+	response, err := http.Get(url)
+	if err != nil {
+		fmt.Println("Error Receiving HTML")
+		return
+	}
+	defer response.Body.Close()
+	body, err := io.ReadAll(response.Body)
+
+	program_info := VisitStatusReport{}
+
+	err = xml.Unmarshal(body, &program_info)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	for _, visit := range program_info.Visit {
+		cfg.update_visit(ID, visit)
+	}
+
+}
+
 func (cfg *apiConfig) get_program_info(ID int) {
 	url := get_program_url(ID)
-	fmt.Println("Parsing ", url)
 
 	response, err := http.Get(url)
 	if err != nil {
@@ -119,6 +143,79 @@ func (cfg *apiConfig) add_visit(programID int, visit SingleVisit) error {
 	}
 
 	_, err = cfg.dbQueries.CreateVisit(context.Background(), visit_params)
+
+	return err
+}
+
+func (cfg *apiConfig) update_visit(programID int, visit SingleVisit) error {
+
+	obsInt, err := strconv.Atoi(visit.Observation)
+	if err != nil {
+		return err
+	}
+	visInt, err := strconv.Atoi(visit.Visit)
+	if err != nil {
+		return err
+	}
+
+	// Format each number with appropriate zero-padding
+	formatted := fmt.Sprintf("%d%03d%03d", programID, obsInt, visInt)
+
+	// Convert back to integer
+	fullID, err := strconv.Atoi(formatted)
+	if err != nil {
+		fmt.Println("Error converting to integer:", err)
+		return err
+	}
+
+	var sTime int64
+	var eTime int64
+
+	switch visit.Status {
+	case "Flight Ready", "Implementation":
+		// need to parse planwindow into a start and end time
+		timeRange := visit.PlanWindow
+		timeRange, _ = get_substring_between(timeRange, "(", ")")
+		endPoints := strings.Split(timeRange, "-")
+		if len(endPoints) != 2 {
+			sTime = 0
+			eTime = 0
+		} else {
+			sTimeYears := strings.TrimSpace(endPoints[0])
+			//			sTimeYears, err := strconv.ParseFloat(strings.TrimSpace(endPoints[0]), 64)
+			//			if err != nil {
+			//				fmt.Println(err)
+			//				return err
+			//			}
+			eTimeYears := strings.TrimSpace(endPoints[1])
+			//			eTimeYears, err := strconv.ParseFloat(strings.TrimSpace(endPoints[1]), 64)
+			//			if err != nil {
+			//				fmt.Println(err)
+			//				return err
+			//			}
+
+			sTime = fractionalYearToUnix(sTimeYears)
+			eTime = fractionalYearToUnix(eTimeYears)
+		}
+	case "Withdrawn":
+		sTime = 0
+		eTime = 0
+	default:
+		sTime = parse_time(visit.StartTime).Unix()
+		eTime = parse_time(visit.EndTime).Unix()
+	}
+
+	visit_params := database.UpdateVisitParams{
+		UpdatedAt:     time.Now().Unix(),
+		Status:        visit.Status,
+		Target:        visit.Target,
+		Configuration: visit.Configuration,
+		Starttime:     sTime,
+		Endtime:       eTime,
+		ID:            int64(fullID),
+	}
+
+	_, err = cfg.dbQueries.UpdateVisit(context.Background(), visit_params)
 
 	return err
 }

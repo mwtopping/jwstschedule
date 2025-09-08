@@ -18,14 +18,14 @@ type apiConfig struct {
 func (cfg *apiConfig) create_program_database() error {
 
 	//gocy1url := "https://www.stsci.edu/jwst/science-execution/approved-programs/general-observers/cycle-1-go"
-	//	urls := []string{"https://www.stsci.edu/jwst/science-execution/approved-programs/general-observers/cycle-1-go",
-	//		"https://www.stsci.edu/jwst/science-execution/approved-programs/general-observers/cycle-2-go",
-	//		"https://www.stsci.edu/jwst/science-execution/approved-programs/general-observers/cycle-3-go",
-	//		"https://www.stsci.edu/jwst/science-execution/approved-programs/general-observers/cycle-4-go",
-	//		"https://www.stsci.edu/jwst/science-execution/approved-programs/guaranteed-time-observations",
-	//		"https://www.stsci.edu/jwst/science-execution/approved-programs/directors-discretionary-time"}
+	urls := []string{"https://www.stsci.edu/jwst/science-execution/approved-programs/general-observers/cycle-1-go",
+		"https://www.stsci.edu/jwst/science-execution/approved-programs/general-observers/cycle-2-go",
+		"https://www.stsci.edu/jwst/science-execution/approved-programs/general-observers/cycle-3-go",
+		"https://www.stsci.edu/jwst/science-execution/approved-programs/general-observers/cycle-4-go",
+		"https://www.stsci.edu/jwst/science-execution/approved-programs/guaranteed-time-observations",
+		"https://www.stsci.edu/jwst/science-execution/approved-programs/directors-discretionary-time"}
 
-	urls := []string{"https://www.stsci.edu/jwst/science-execution/approved-programs/general-observers/cycle-4-go"}
+	//urls := []string{"https://www.stsci.edu/jwst/science-execution/approved-programs/general-observers/cycle-4-go"}
 
 	for _, url := range urls {
 		log.Println("Getting programs from URL: ", url)

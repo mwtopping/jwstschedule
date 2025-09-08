@@ -194,6 +194,17 @@ document.addEventListener('DOMContentLoaded', function() {
         let oneweek = new Date(today.getTime() + 7*24*60*60*1000);
         console.log("today:", today)
         autoFitToData(customMinDate = today, customMaxDate = oneweek);
+    } else if (window.location.pathname.endsWith('/month')) {
+        let today = new Date();
+        let onemonth = new Date(today.getTime() + 30*24*60*60*1000);
+        console.log("today:", today)
+        autoFitToData(customMinDate = today, customMaxDate = onemonth);
+    } else if (window.location.pathname.endsWith('/year')) {
+        let today = new Date();
+        let onemonth = new Date(today.getTime() + 365.25*24*60*60*1000);
+        console.log("today:", today)
+        autoFitToData(customMinDate = today, customMaxDate = onemonth);
+
     } else {
         autoFitToData();
     }

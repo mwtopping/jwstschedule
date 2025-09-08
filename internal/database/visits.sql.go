@@ -128,6 +128,108 @@ func (q *Queries) GetAllVisits(ctx context.Context) ([]GetAllVisitsRow, error) {
 	return items, nil
 }
 
+const getMonthVisits = `-- name: GetMonthVisits :many
+SELECT 
+	program_info.id, visits.observation, visits.visit, program_info.title, visits.Status, visits.StartTime, visits.EndTime, program_info.eap
+FROM
+	visits
+	JOIN
+		program_info
+	ON visits.program_ID = program_info.id
+WHERE
+	visits.StartTime > 0
+	AND
+	visits.StartTime - ? BETWEEN 0 AND 60*60*24*30
+ORDER BY visits.StartTime
+`
+
+type GetMonthVisitsRow struct {
+	ID          int64
+	Observation int64
+	Visit       int64
+	Title       string
+	Status      string
+	Starttime   int64
+	Endtime     int64
+	Eap         int64
+}
+
+func (q *Queries) GetMonthVisits(ctx context.Context, starttime int64) ([]GetMonthVisitsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getMonthVisits, starttime)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetMonthVisitsRow
+	for rows.Next() {
+		var i GetMonthVisitsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Observation,
+			&i.Visit,
+			&i.Title,
+			&i.Status,
+			&i.Starttime,
+			&i.Endtime,
+			&i.Eap,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getPendingPrograms = `-- name: GetPendingPrograms :many
+SELECT 
+	DISTINCT program_info.id
+FROM
+	visits
+	JOIN
+		program_info
+	ON visits.program_ID = program_info.id
+WHERE
+	visits.StartTime > 0
+	AND
+	visits.Status NOT IN (
+		"Archived",
+		"Withdrawn",
+		"Inactive",
+		"Failed",
+		"Skipped"
+		)
+ORDER BY program_info.id
+`
+
+func (q *Queries) GetPendingPrograms(ctx context.Context) ([]int64, error) {
+	rows, err := q.db.QueryContext(ctx, getPendingPrograms)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getWeekVisits = `-- name: GetWeekVisits :many
 SELECT 
 	program_info.id, visits.observation, visits.visit, program_info.title, visits.Status, visits.StartTime, visits.EndTime, program_info.eap
@@ -184,4 +286,112 @@ func (q *Queries) GetWeekVisits(ctx context.Context, starttime int64) ([]GetWeek
 		return nil, err
 	}
 	return items, nil
+}
+
+const getYearVisits = `-- name: GetYearVisits :many
+SELECT 
+	program_info.id, visits.observation, visits.visit, program_info.title, visits.Status, visits.StartTime, visits.EndTime, program_info.eap
+FROM
+	visits
+	JOIN
+		program_info
+	ON visits.program_ID = program_info.id
+WHERE
+	visits.StartTime > 0
+	AND
+	visits.StartTime - ? BETWEEN 0 AND 60*60*24*365
+ORDER BY visits.StartTime
+`
+
+type GetYearVisitsRow struct {
+	ID          int64
+	Observation int64
+	Visit       int64
+	Title       string
+	Status      string
+	Starttime   int64
+	Endtime     int64
+	Eap         int64
+}
+
+func (q *Queries) GetYearVisits(ctx context.Context, starttime int64) ([]GetYearVisitsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getYearVisits, starttime)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetYearVisitsRow
+	for rows.Next() {
+		var i GetYearVisitsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Observation,
+			&i.Visit,
+			&i.Title,
+			&i.Status,
+			&i.Starttime,
+			&i.Endtime,
+			&i.Eap,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateVisit = `-- name: UpdateVisit :one
+UPDATE visits
+SET 
+updated_at=?, 
+Status=?, 
+Target=?, 
+Configuration=?, 
+StartTime=?, 
+EndTime=?
+WHERE id = ?
+RETURNING id, created_at, updated_at, program_id, observation, visit, status, target, configuration, starttime, endtime
+`
+
+type UpdateVisitParams struct {
+	UpdatedAt     int64
+	Status        string
+	Target        string
+	Configuration string
+	Starttime     int64
+	Endtime       int64
+	ID            int64
+}
+
+func (q *Queries) UpdateVisit(ctx context.Context, arg UpdateVisitParams) (Visit, error) {
+	row := q.db.QueryRowContext(ctx, updateVisit,
+		arg.UpdatedAt,
+		arg.Status,
+		arg.Target,
+		arg.Configuration,
+		arg.Starttime,
+		arg.Endtime,
+		arg.ID,
+	)
+	var i Visit
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.ProgramID,
+		&i.Observation,
+		&i.Visit,
+		&i.Status,
+		&i.Target,
+		&i.Configuration,
+		&i.Starttime,
+		&i.Endtime,
+	)
+	return i, err
 }
