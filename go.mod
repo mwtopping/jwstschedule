@@ -2,7 +2,11 @@ module jwstscheduler
 
 go 1.24.4
 
-require github.com/stretchr/testify v1.11.0
+require (
+	github.com/schollz/progressbar/v3 v3.18.0
+	github.com/stretchr/testify v1.11.0
+	modernc.org/sqlite v1.38.2
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -14,7 +18,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/schollz/progressbar/v3 v3.18.0 // indirect
 	golang.org/x/exp v0.0.0-20250620022241-b7579e27df2b // indirect
 	golang.org/x/sys v0.36.0 // indirect
 	golang.org/x/term v0.34.0 // indirect
@@ -22,5 +25,4 @@ require (
 	modernc.org/libc v1.66.3 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
-	modernc.org/sqlite v1.38.2 // indirect
 )

@@ -152,9 +152,18 @@ func (cfg *apiConfig) handlerDisplay(w http.ResponseWriter, r *http.Request) {
 		for _, yearv := range yearvs {
 			vs = append(vs, database.GetAllVisitsRow(yearv))
 		}
-
-	default:
+	case "all":
 		vs, err = cfg.dbQueries.GetAllVisits(context.Background())
+	default:
+		weekvs, err := cfg.dbQueries.GetWeekVisits(context.Background(), time.Now().Unix())
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		for _, weekv := range weekvs {
+			vs = append(vs, database.GetAllVisitsRow(weekv))
+		}
+		log.Println("Default: Week")
 
 	}
 

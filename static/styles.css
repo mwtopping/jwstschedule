@@ -150,6 +150,9 @@ td
     border-color: #4ECDC4;
 }
 
+
+
+
 .date-controls button {
     padding: 8px 16px;
     background-color: #4ECDC4;
@@ -176,3 +179,68 @@ td
 #auto-fit:hover {
     background-color: #FF5252;
 }
+
+#weeknav {
+    background-color: #9e9ac8;
+}
+
+#weeknav:hover {
+    background-color: #807dba;
+}
+
+#monthnav {
+    background-color: #807dba;
+}
+
+#monthnav:hover {
+    background-color: #6a51a3;
+}
+
+#yearnav {
+    background-color: #6a51a3;
+}
+
+#yearnav:hover {
+    background-color: #54278f;
+}
+
+#allnav {
+    background-color: #54278f;
+}
+
+#allnav:hover {
+    background-color: #3f007d;
+}
+
+
+.navigation {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+
+.navigation {
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.navigation button.navselected{
+  border:3px solid black;
+}
+
+.navigation button {
+    padding: 8px 10%;
+    background-color: #4ECDC4;
+    color: white;
+    border: 0px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+

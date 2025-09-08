@@ -194,19 +194,34 @@ document.addEventListener('DOMContentLoaded', function() {
         let oneweek = new Date(today.getTime() + 7*24*60*60*1000);
         console.log("today:", today)
         autoFitToData(customMinDate = today, customMaxDate = oneweek);
+        let pagebutton = document.getElementById('weeknav');
+        pagebutton.className = "navselected";
     } else if (window.location.pathname.endsWith('/month')) {
         let today = new Date();
         let onemonth = new Date(today.getTime() + 30*24*60*60*1000);
         console.log("today:", today)
         autoFitToData(customMinDate = today, customMaxDate = onemonth);
+        let pagebutton = document.getElementById('monthnav');
+        pagebutton.className = "navselected";
+
     } else if (window.location.pathname.endsWith('/year')) {
         let today = new Date();
         let onemonth = new Date(today.getTime() + 365.25*24*60*60*1000);
         console.log("today:", today)
         autoFitToData(customMinDate = today, customMaxDate = onemonth);
-
-    } else {
+        let pagebutton = document.getElementById('yearnav');
+        pagebutton.className = "navselected";
+    } else if (window.location.pathname.endsWith('/all')) {
         autoFitToData();
+        let pagebutton = document.getElementById('allnav');
+        pagebutton.className = "navselected";
+    } else {
+        let today = new Date();
+        let oneweek = new Date(today.getTime() + 7*24*60*60*1000);
+        console.log("today:", today)
+        autoFitToData(customMinDate = today, customMaxDate = oneweek);
+        let pagebutton = document.getElementById('weeknav');
+        pagebutton.className = "navselected";
     }
 
     document.getElementById('auto-fit').addEventListener('click', autoFitToData);
