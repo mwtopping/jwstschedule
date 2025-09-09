@@ -29,22 +29,24 @@
         </div>
 
     </div>
-    <div class="navigation">
-    <button onclick="location.href='/'" id="obsnav" class="navselected">Order by observation time</button>
-    <button onclick="location.href='/release'" id="relnav">Order by data release</button>
-    </div>
 
     <div class="navigation">
-    <button onclick="location.href='/week'" id="weeknav">Week</button>
-    <button onclick="location.href='/month'" id="monthnav">Month</button>
-    <button onclick="location.href='/year'" id="yearnav">Year</button>
-    <button onclick="location.href='/all'" id="allnav">All</button>
+    <button onclick="location.href='/'" id="obsnav">Order by observation time</button>
+    <button onclick="location.href='/release'" id="relnav" class="navselected">Order by data release</button>
     </div>
 
+
+    <div class="navigation">
+    <button onclick="location.href='/release/week'" id="weeknav">Week</button>
+    <button onclick="location.href='/release/month'" id="monthnav">Month</button>
+    <button onclick="location.href='/release/year'" id="yearnav">Year</button>
+    <button onclick="location.href='/release/all'" id="allnav">All</button>
+    </div>
 
             <div class="navigation">
                 <img src="/static/timeline_key.png" style="width:50%"></img>
                 </div>
+
 
 
 <table id="timeline-table">

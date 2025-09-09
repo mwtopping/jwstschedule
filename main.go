@@ -76,6 +76,7 @@ func main() {
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
 
 	mux.HandleFunc("GET /", cfg.handlerDisplay)
+	mux.HandleFunc("GET /release/", cfg.handlerDisplayRelease)
 
 	server := &http.Server{Handler: mux, Addr: port}
 	log.Printf("Server listening on port%v\n", port)
@@ -252,4 +253,102 @@ func (cfg *apiConfig) LoadDatabase(s string) error {
 	cfg.dbQueries = queries
 
 	return nil
+}
+
+func (cfg *apiConfig) handlerDisplayRelease(w http.ResponseWriter, r *http.Request) {
+
+	//load html template
+	tmpl, err := template.ParseFiles("./templates/schedule_release.html")
+	if err != nil {
+		log.Println("Error reading template")
+		log.Println(err)
+		return
+	}
+
+	type Visit struct {
+		ProgID    int
+		ObsNum    int
+		VisNum    int
+		EAP       int
+		ProgName  string
+		Status    string
+		Starttime string
+		Endtime   string
+	}
+
+	DisplayVisits := make([]Visit, 0, 0)
+
+	var vs []database.GetAllReleaseVisitsRow
+
+	requestPath := strings.TrimPrefix(r.URL.Path, "/release/")
+	switch requestPath {
+	case "week":
+		weekvs, err := cfg.dbQueries.GetWeekReleaseVisits(context.Background(), time.Now().Unix())
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		for _, weekv := range weekvs {
+			vs = append(vs, database.GetAllReleaseVisitsRow(weekv))
+		}
+	case "month":
+		monthvs, err := cfg.dbQueries.GetMonthReleaseVisits(context.Background(), time.Now().Unix())
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		for _, monthv := range monthvs {
+			vs = append(vs, database.GetAllReleaseVisitsRow(monthv))
+		}
+	case "year":
+		yearvs, err := cfg.dbQueries.GetYearReleaseVisits(context.Background(), time.Now().Unix())
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		for _, yearv := range yearvs {
+			vs = append(vs, database.GetAllReleaseVisitsRow(yearv))
+		}
+	case "all":
+		vs, err = cfg.dbQueries.GetAllReleaseVisits(context.Background())
+	default:
+		weekvs, err := cfg.dbQueries.GetWeekReleaseVisits(context.Background(), time.Now().Unix())
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		for _, weekv := range weekvs {
+			vs = append(vs, database.GetAllReleaseVisitsRow(weekv))
+		}
+		log.Println("Default: Week")
+
+	}
+
+	for _, v := range vs {
+		startTime := time.Unix(v.Starttime, 0)
+		endTime := time.Unix(v.Endtime, 0)
+
+		DisplayVisit := Visit{
+			ProgID:    int(v.ID),
+			ObsNum:    int(v.Observation),
+			VisNum:    int(v.Visit),
+			EAP:       int(v.Eap),
+			ProgName:  v.Title,
+			Status:    v.Status,
+			Starttime: startTime.In(time.UTC).Format("2006-01-02T15:04:05"),
+			Endtime:   endTime.In(time.UTC).Format("2006-01-02T15:04:05"),
+		}
+
+		DisplayVisits = append(DisplayVisits, DisplayVisit)
+
+	}
+
+	type PageData struct {
+		DisplayVisits []Visit
+	}
+
+	data := PageData{DisplayVisits: DisplayVisits}
+
+	tmpl.Execute(w, data)
+
 }
