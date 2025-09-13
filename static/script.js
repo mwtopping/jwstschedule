@@ -103,6 +103,8 @@ function generateTimelines() {
             row.style.display = "none";
         }
 
+
+
         const startOffset = Math.max(0, ((startDate - minDate) / totalMilliseconds) * 100);
 
         const startEap = new Date(startDate.getTime() + eapMonths*30*24*60*60*1000);
@@ -115,6 +117,12 @@ function generateTimelines() {
         if (eapOffset > 100) {
             eapDisplay = "none"
         }
+
+        if (eapOffset >= 0) {
+            row.style.display = "";
+        }
+
+
 
 
         if (ii%occurance ===0) {
